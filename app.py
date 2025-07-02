@@ -1,22 +1,24 @@
 
 import streamlit as st
 import pandas as pd
+import os
 from sklearn.metrics.pairwise import cosine_similarity
 
 # 页面配置
 st.set_page_config(page_title="🎬 电影推荐系统", layout="centered")
 
+# 检查文件是否存在
+if not os.path.exists("movie.csv"):
+    st.error("❌ 找不到 movie.csv 文件，请确认它上传到了仓库根目录！")
+    st.stop()
+
 # 加载数据
 @st.cache_data
 def load_data():
-    try:
-        df = pd.read_csv("movie.csv")
-        if "genres" not in df.columns or "title" not in df.columns:
-            raise ValueError("❌ movie.csv 缺少必要的 'title' 或 'genres' 列")
-        return df
-    except Exception as e:
-        st.error(f"❌ 数据加载失败：{e}")
-        return None
+    df = pd.read_csv("movie.csv")
+    if "genres" not in df.columns or "title" not in df.columns:
+        raise ValueError("❌ movie.csv 缺少必要的 'title' 或 'genres' 列")
+    return df
 
 df = load_data()
 if df is None:
